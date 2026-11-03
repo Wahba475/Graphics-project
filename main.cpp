@@ -113,7 +113,7 @@ GLint offset, scale, colors;
   float mamaX = -0.70f;   
   float namoosaX = 0.9f;   // the mosquito starts at the right
 
-  void HealthSquares(float x, float y, int health) {
+  void HealthSquares(float x, float y, int health) {  // da ek health bar el fo2 el characters . 
 	  for (int i = 0; i < health; i++) {           
 		  DrawingRectangles(x + i * 0.018f, y,    
 			  0.014f, 0.025f,        // size of one square
@@ -243,7 +243,7 @@ int main() {
 	glEnableVertexAttribArray(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
-
+	int counter = 60;
 	while (!glfwWindowShouldClose(window))
 	{
 		glfwPollEvents();
@@ -318,6 +318,15 @@ int main() {
 			mamaX = mamaX + 0.0008f;      // Mama walks right
 			namoosaX = namoosaX - 0.001f;    // mosquito walks left
 		}
+		else {
+			counter--;
+			if (counter <= 0) {
+			mamaHealth = mamaHealth - 1;
+			namoosaHealth = namoosaHealth - 1;
+			counter = 60;
+		}
+			
+		}
 		HealthSquares(mamaX, -0.074f + 0.23f, mamaHealth);
 		HealthSquares(-0.603f, -0.433f + 0.17f, brotherHealth);
 		HealthSquares(-0.607f, -0.799f + 0.17f, tetaHealth);
@@ -325,16 +334,23 @@ int main() {
 		HealthSquares(0.8f, -0.528f + 0.07f, sorsarHealth);
 		HealthSquares(0.727f, -0.847f + 0.17f, catHealth);
 
-		
+		if (mamaHealth > 0) {                   // paint Mama only while alive
+			Mama(mamaX, -0.074f);
+			HealthSquares(mamaX, -0.074f + 0.23f, mamaHealth);
+		}
+		if (namoosaHealth > 0) {                // paint the mosquito only while alive
+			Namoosa(namoosaX, 0.039f);
+			HealthSquares(namoosaX, 0.039f + 0.10f, namoosaHealth);
+		}
 		
 
 		//Our Team
 		Teta(-0.607f, -0.799f);
-		Mama(mamaX, -0.074f);
+		//Mama(mamaX, -0.074f);
 		Brother(-0.603f, -0.433f);
 
 		//The Opps
-		Namoosa(namoosaX, 0.039f);
+		//Namoosa(namoosaX, 0.039f);
 		SorSar(roachX, -0.528f);
 		Cat(0.727f, -0.847f);
 	
