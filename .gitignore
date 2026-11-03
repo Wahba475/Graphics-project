@@ -1,0 +1,11 @@
+.vs/
+x64/
+Project1/x64/
+*.user
+*.bak
+*.obj
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.log
