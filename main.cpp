@@ -68,7 +68,7 @@ GLint offset, scale, colors;
 	  DrawingCircle(x, y + 0.093f, 0.062, 0.111, 0.96, 0.96, 0.96); // el hijab bt3 teta alah y5leha
 	  DrawingCircle(x, y + 0.091f, 0.037, 0.067, 0.88, 0.71, 0.54); // we4 teta (face)
 }
-  void Mama(float x, float y) {
+  void Mama(float x, float y) {  // melee 
 	  DrawingTriangles(x, y, 0.1f, 0.203f, 0.48, 0.31, 0.63 ); // dress (purple)
 	  DrawingCircle(x, y + 0.149f, 0.062f, 0.111f, 0.95, 0.78, 0.29); // head / scarf (yellow)
 	  DrawingRectangles(x + 0.073f, y + 0.132f, 0.034f, 0.117f, 0.23, 0.44, 0.82); // slipper
@@ -77,7 +77,7 @@ GLint offset, scale, colors;
 	  DrawingRectangles(x, y - 0.096f, 0.058f, 0.069f, 0.14, 0.22, 0.36); // pants
 	  DrawingRectangles(x, y, 0.069f, 0.122f, 0.16, 0.62, 0.56); // shirt
 	  DrawingCircle(x, y + 0.1f, 0.053f, 0.094f, 0.88, 0.71, 0.54); // rasoo abyad
-	  DrawingRectangles(x + 0.072f, y + 0.018f, 0.025f, 0.086f, 0.25, 0.64, 0.30); // spray can  Range(melee weapon)  green
+	  DrawingRectangles(x + 0.072f, y + 0.018f, 0.025f, 0.086f, 0.25, 0.64, 0.30); // spray can   green
   }
 
   void Namoosa(float x, float y) {
@@ -101,8 +101,27 @@ GLint offset, scale, colors;
 	  DrawingCircle(x - 0.091f, y + 0.041f, 0.069f, 0.122f, 0.94f, 0.60f, 0.24f);       // head (light orange)
   }
 
+  int mamaHealth = 5;
+  int brotherHealth = 5;
+  int tetaHealth = 7;
+  int namoosaHealth = 5;
+  int sorsarHealth = 5;
+  int catHealth = 7;
 
 
+  float roachX = 0.9f;
+  float mamaX = -0.70f;   
+  float namoosaX = 0.9f;   // the mosquito starts at the right
+
+  void HealthSquares(float x, float y, int health) {
+	  for (int i = 0; i < health; i++) {           
+		  DrawingRectangles(x + i * 0.018f, y,    
+			  0.014f, 0.025f,        // size of one square
+			  0.45f, 0.62f, 0.25f);  // green
+	  }
+  }
+
+ 
 
 
 
@@ -129,6 +148,7 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(window);
+	glfwSwapInterval(1);     // loop runs at the screen's speed (about 60 per second) 3ala 7sb el pc bt3k 
 
 	gladLoadGL();
 
@@ -292,15 +312,30 @@ int main() {
 		//glDrawArrays(GL_TRIANGLES, 0, 3);
 
 		 //lel rectangle
+		//mamaX = mamaX + 0.0008f;
+		
+		if (namoosaX - mamaX > 0.18f) {      // gap still bigger than 0.18 = not touching
+			mamaX = mamaX + 0.0008f;      // Mama walks right
+			namoosaX = namoosaX - 0.001f;    // mosquito walks left
+		}
+		HealthSquares(mamaX, -0.074f + 0.23f, mamaHealth);
+		HealthSquares(-0.603f, -0.433f + 0.17f, brotherHealth);
+		HealthSquares(-0.607f, -0.799f + 0.17f, tetaHealth);
+		HealthSquares(namoosaX, 0.039f + 0.10f, namoosaHealth);
+		HealthSquares(0.8f, -0.528f + 0.07f, sorsarHealth);
+		HealthSquares(0.727f, -0.847f + 0.17f, catHealth);
+
+		
+		
 
 		//Our Team
 		Teta(-0.607f, -0.799f);
-		Mama(-0.603f, -0.074f);
+		Mama(mamaX, -0.074f);
 		Brother(-0.603f, -0.433f);
 
 		//The Opps
-		Namoosa(0.409f, 0.039f);
-		SorSar(0.609f, -0.528f);
+		Namoosa(namoosaX, 0.039f);
+		SorSar(roachX, -0.528f);
 		Cat(0.727f, -0.847f);
 	
 		
