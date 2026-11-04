@@ -125,12 +125,6 @@ GLint offset, scale, colors;
 
 
 
-
-
-
-
-
-
 int main() {
 	glfwInit();
 
