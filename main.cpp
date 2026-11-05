@@ -103,6 +103,39 @@ void Cat(float x, float y) {
 	DrawingTriangles(x - 0.07f, y + 0.12f, 0.028f, 0.05f, 0.91f, 0.54f, 0.17f);       // right ear
 	DrawingCircle(x - 0.091f, y + 0.041f, 0.069f, 0.122f, 0.94f, 0.60f, 0.24f);       // head (light orange)
 }
+void Pot(float x, float y) {
+	DrawingCircle(x - 0.11f, y + 0.08f, 0.03f, 0.053f, 0.40f, 0.42f, 0.45f);    // left handle
+	DrawingCircle(x + 0.11f, y + 0.08f, 0.03f, 0.053f, 0.40f, 0.42f, 0.45f);    // right handle
+	DrawingRectangles(x, y, 0.20f, 0.30f, 0.62f, 0.64f, 0.67f);                 // big body
+	DrawingRectangles(x, y - 0.165f, 0.16f, 0.03f, 0.35f, 0.36f, 0.38f);         // small base under it
+	DrawingRectangles(x, y + 0.165f, 0.22f, 0.03f, 0.40f, 0.42f, 0.45f);         // lid on top
+	DrawingCircle(x, y + 0.195f, 0.025f, 0.044f, 0.25f, 0.25f, 0.28f);           // lid knob
+	DrawingCircle(x, y + 0.25f, 0.04f, 0.071f, 0.95f, 0.95f, 0.95f);             // steam puff
+}
+void Window(float x, float y) {
+	DrawingRectangles(x, y, 0.28f, 0.40f, 0.95f, 0.95f, 0.92f);          // white frame
+	
+	DrawingRectangles(x, y, 0.012f, 0.35f, 0.95f, 0.95f, 0.92f);         // standing bar
+	DrawingRectangles(x, y, 0.24f, 0.02f, 0.95f, 0.95f, 0.92f);          // flat bar
+	DrawingRectangles(x, y - 0.21f, 0.32f, 0.03f, 0.55f, 0.35f, 0.20f);  // wooden sill
+}
+void Clock(float x, float y) {
+	DrawingCircle(x, y, 0.10f, 0.178f, 0.25f, 0.20f, 0.18f);              // dark rim
+	DrawingCircle(x, y, 0.085f, 0.151f, 0.98f, 0.97f, 0.93f);             // white face
+	DrawingRectangles(x, y + 0.03f, 0.006f, 0.06f, 0.25f, 0.20f, 0.18f);  // hand pointing up
+	DrawingRectangles(x + 0.02f, y, 0.04f, 0.008f, 0.25f, 0.20f, 0.18f);  // hand pointing right
+}
+void Fridge(float x, float y) {
+	DrawingRectangles(x, y, 0.20f, 0.62f, 0.92f, 0.93f, 0.95f);                   // white body
+	
+	DrawingRectangles(x - 0.07f, y, 0.012f, 0.14f, 0.60f, 0.62f, 0.65f);          // fridge handle
+	
+}
+void Door(float x, float y) {
+	DrawingRectangles(x, y, 0.22f, 0.68f, 0.40f, 0.25f, 0.15f);                 // dark frame
+	DrawingRectangles(x, y - 0.01f, 0.19f, 0.65f, 0.60f, 0.40f, 0.25f);         // door
+	DrawingCircle(x + 0.065f, y - 0.02f, 0.02f, 0.036f, 0.90f, 0.75f, 0.30f);   // gold knob
+}
 
 int mamaHealth = 5;
 int brotherHealth = 5;
@@ -294,6 +327,54 @@ void DrawLaneBorder(int lane, float r, float g, float b)
 	DrawingRectangles(0.125f, y - 0.189f, 1.75f, 0.012f, r, g, b);   // ta7t 
 	DrawingRectangles(-0.7465f, y, 0.007f, 0.39f, r, g, b);   // shemal 
 	DrawingRectangles(0.9965f, y, 0.007f, 0.39f, r, g, b);   // ymen 
+}
+const char* letterNames = "YOULSEGdJbPArqIt";  // leh el letters de bec dool kol eli hn7tgom fel menues eli homa :YOU lose, good job , play,quit, Replay
+
+//  dol 8 segments 7ashan el letters eli fel menue wel pop ups a4an nktbhom
+bool letterSegments[16][7] = {            
+	//  a      b      c      d      e      f      g
+	{ false, true,  true,  true,  false, true,  true },  // 0  Y
+	{ true,  true,  true,  true,  true,  true,  false },  // 1  O
+	{ false, true,  true,  true,  true,  true,  false },  // 2  U
+	{ false, false, false, true,  true,  true,  false },  // 3  L
+	{ true,  false, true,  true,  false, true,  true },  // 4  S
+	{ true,  false, false, true,  true,  true,  true },  // 5  E
+	{ true,  false, true,  true,  true,  true,  false },  // 6  G
+	{ false, true,  true,  true,  true,  false, true },  // 7  d
+	{ false, true,  true,  true,  true,  false, false },  // 8  J
+	{ false, false, true,  true,  true,  true,  true },  // 9  b
+	{ true,  true,  false, false, true,  true,  true },  // 10 P
+	{ true,  true,  true,  false, true,  true,  true },  // 11 A
+	{ false, false, false, false, true,  false, true },  // 12 r
+	{ true,  true,  true,  false, false, true,  true },  // 13 q
+	{ false, true,  true,  false, false, false, false },  // 14 I
+	{ false, false, false, true,  true,  true,  true }   // 15 t
+};
+void DrawLetter(char letter, float cx, float cy, float s, float r, float g, float b)
+{
+	
+	int row = -1;                             
+	for (int i = 0; i < 16; i++) {               
+		if (letterNames[i] == letter) row = i;   //  hena it look at this char in here YOULSEGdJbPArqIt"
+	}
+	if (row == -1) return;                       
+
+	
+	if (letterSegments[row][0]) DrawingRectangles(cx, cy + 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);                // a: top  the  
+	if (letterSegments[row][6]) DrawingRectangles(cx, cy, 0.04f * s, 0.012f * s, r, g, b);                            // g: middle
+	if (letterSegments[row][3]) DrawingRectangles(cx, cy - 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);                // d: bottom
+	if (letterSegments[row][5]) DrawingRectangles(cx - 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // f: upper left
+	if (letterSegments[row][1]) DrawingRectangles(cx + 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // b: upper right
+	if (letterSegments[row][4]) DrawingRectangles(cx - 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // e: lower left
+	if (letterSegments[row][2]) DrawingRectangles(cx + 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // c: lower right
+}
+
+
+void DrawWord(const char* word, float x, float y, float s, float r, float g, float b)
+{
+	for (int i = 0; word[i] != '\0'; i++) {                       // '\0' = the end of the text
+		DrawLetter(word[i], x + i * 0.055f * s, y, s, r, g, b);   // letter i, i gaps to the right
+	}
 }
 
 
@@ -976,7 +1057,10 @@ int main() {
 
 
 
-
+		if (lost) {
+			DrawingRectangles(0.0f, 0.0f, 1.0f, 0.8f, 0.2f, 0.1f, 0.1f);   
+			DrawWord("YOU LOSE", -0.29f, 0.2f, 1.5f, 1.0f, 1.0f, 1.0f);     
+		}
 
 		// Yassin's Starting Part
 		double PixelelX;
@@ -1018,9 +1102,15 @@ int main() {
 		BrotherYedrab();
 		MoveBrotherBullets();
 		RasmBrotherBullets();
+		Pot(-0.875,-0.42);
+		Window(-0.30f, 0.55f);
+		Clock(0.0f, 0.72f);
+		
+		Fridge(0.30f, 0.48f);
+		Door(0.60f, 0.51f);
 		// Yassin's Ending Part
 
-
+		
 		
 
 
