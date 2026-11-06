@@ -20,14 +20,16 @@ const char* vertexShaderSource = "#version 330 core\n"
 const char* fragmentShaderSource = "#version 330 core\n"
 "out vec4 FragColor;\n"
 "uniform vec3 color;\n"
+"uniform float red;\n"
 "void main()\n"
 "{\n"
-"   FragColor = vec4(color, 1.0);\n"
+"   FragColor = vec4(mix(color, vec3(1.0, 0.0, 0.0), red), 1.0);\n"
 "}\0";
 
 GLuint TriangleVAO, RectangleVAO, TriangleVBO, RectangleVBO, CircleVAO, CircleVBO;
 
 GLint offset, scale, colors;
+GLint makanelred;   // where "red" is inside the shader
 
 // hn3ml function testahl 3lena bdl mn3ed kol 4ewaya hn3ml wa7d lel rectangle we wa7d lel circle we by5do inputes we bytl3o el shapes . bnendh 3lehom fel while loop
 
@@ -119,13 +121,13 @@ void HealthSquares(float x, float y, int health) {  // da el health bar el fo2 e
 	}
 }
 
-//yahya part
+
 
 enum EnemyType
 {
-	EASY,     // namoosa: btedrab men fo2
-	MEDIUM,   // sorsar: beyedrab men ta7t
-	HARD      // cat: beyegry w beyedrab 2
+	EASY,     // namoosa: btedrab men fo2 ,fa 0 = namosa
+	MEDIUM,   // sorsar: beyedrab men ta7t ,fa 1 = sorsar
+	HARD      // cat: beyegry w beyedrab 2 ,fa 2 = cat
 };
 
 typedef struct EnemyDescription {
@@ -168,7 +170,7 @@ std::vector<FloorCoin> floorCoins;
 
 bool lost = false;   // true lama enemy yewsal el home base
 bool won = false;    // true lama el 3 waves y5lso
-//yahya part
+
 
 
 
@@ -509,9 +511,9 @@ void KeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 	int newState = 0;
 	if (key == GLFW_KEY_W || key == GLFW_KEY_UP)   
-		newState = 1;// jump
+		newState = 1;
 	if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN) 
-		newState = 2;   // duck
+		newState = 2;  
 	if (newState == 0) 
 		return;
 
@@ -519,18 +521,18 @@ void KeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 	for (int i = 0; i < players.size(); i++) { // hena bnshof mn el players ely msh bey duck or jump
 		if (players[i].type == DEFENSE) 
-			continue;          // Teta mabetjumpsh
+			continue;          
 		if (!ElLinesSelected[players[i].lane]) 
-			continue;   // el lane msh selected
+			continue;   
 		if (players[i].state != 0) 
-			continue;              // already jumping/ducking
+			continue;              
 
 		players[i].state = newState;
 		players[i].stateTime = 0;
 	}
 }
 
-void UpdateJumpDuck(int& state, float& time)   // el jump/duck by5las ba3d 0.6 seconds
+void w2tJumpDuck(int& state, float& time)   // el jump/duck by5las ba3d 0.6 seconds
 {
 	if (state == 0) 
 		return;
@@ -542,44 +544,40 @@ void UpdateJumpDuck(int& state, float& time)   // el jump/duck by5las ba3d 0.6 s
 }
 
 
-void YahyaPlayers()   // update el jump + ersem el players b-function Yassin
+void zbttjumpduckplayer()   // update el jump + ersem el players b3d el zbta
 {
 	for (int i = 0; i < players.size(); i++) {
 		if (!lost && !won)
-			UpdateJumpDuck(players[i].state, players[i].stateTime);   // el jump/duck by5las ba3d 0.6 s
+			w2tJumpDuck(players[i].state, players[i].stateTime);   
 
-		RasmElBoughtPlayer(players[i]);   // Yassin's function (heya elly bt-add el jump offset)
+		RasmElBoughtPlayer(players[i]);   
 	}
 }
 
 
-
-
-
-
-int wave = 1;                       // 1, 2 aw 3
-int waveSize[3] = { 3, 5, 10 };     // kam enemy fe kol wave
-int spawnedInWave = 0;              // tala3na kam enemy fel wave di
+int wave = 1;                       
+int waveSize[3] = { 3, 5, 10 };    
+int spawnedInWave = 0;             
 float spawnTimer = 0.0f;
 
-void SpawnEnemy()
+void bnzlenemy()
 {
 	EnemyDescription enemy;
 
 	if (wave == 1) 
-		enemy.type = EASY;                                // wave 1: namoosa bas
+		enemy.type = EASY;                               
 	if (wave == 2) 
-		enemy.type = (EnemyType)(spawnedInWave % 2);      // wave 2: namoosa w sorsar
+		enemy.type = (EnemyType)(spawnedInWave % 2);      // wave 2: namoosa w sorsar bet3rf ezay b enk spawedinwave % 2 hatetl3 0 1 0 1 we hakaza 0 = namosa 1 = sorsar
 	if (wave == 3) 
-		enemy.type = (EnemyType)(spawnedInWave % 3);      // wave 3: el talata
+		enemy.type = (EnemyType)(spawnedInWave % 3);      
 
-	enemy.lane = rand() % 3;      // rand betnzl 3 enemies f random lane
-	enemy.x = 1.0f;               // men el right edge
+	enemy.lane = rand() % 3;     
+	enemy.x = 1.0f;              
 	enemy.hitTimer = 0;
 	enemy.shootTimer = 0;
 
 	if (enemy.type == HARD) 
-		enemy.health = 7; //lw wave hard el enemies el health bt3hm beyb3a 7 bdl 5
+		enemy.health = 7; 
 	else                
 		enemy.health = 5;
 
@@ -587,13 +585,13 @@ void SpawnEnemy()
 	spawnedInWave = spawnedInWave + 1;
 }
 
-void UpdateWaves()
+void UpdateWaves() // lesa fe enemies fel wave di fa spawn enemies kol 2 seconds
 {
-	// lesa fe enemies fel wave di fa spawn enemies kol 2 seconds
+	
 	if (spawnedInWave < waveSize[wave - 1]) {
 		spawnTimer = spawnTimer + 0.016f;
 		if (spawnTimer >= 2.0f) {
-			SpawnEnemy();
+			bnzlenemy();
 			spawnTimer = 0;
 		}
 		return;
@@ -620,67 +618,69 @@ int PlayerOdamEnemy(EnemyDescription enemy) // anhy player wa2ef 2odam el enemy 
 	for (int i = 0; i < players.size(); i++) { 
 		if (players[i].lane != enemy.lane) 
 			continue;
-		float masafa = enemy.x - players[i].x; // lw rg3t positive value yeb2a el player 3ala el shemal
+		float masafa = enemy.x - players[i].x; 
 		if (masafa >= 0 && masafa < 0.15f) 
-			return i; // betrg3 player number
+			return i; 
 	}
 	return -1;
 }
 
-void MoveAndFight()
+void ethrkwdrb()   // el enemies btemshy aw btedra
 {
 	for (int i = 0; i < enemies.size(); i++) {
-		int player = PlayerOdamEnemy(enemies[i]);
+
+		float speed = 0.001f;
+		int damage = 1;
+		if (enemies[i].type == HARD) {
+			speed = 0.003f;
+			damage = 2;
+		}
+
+		int player = PlayerOdamEnemy(enemies[i]);   
 
 		if (player == -1) {
-			// mafeesh player fa el enemy hyemshy shemal
-			if (enemies[i].type == HARD)
-				enemies[i].x = enemies[i].x - 0.003f;   // 0.003f de sor3t el cat 
-			else
-				enemies[i].x = enemies[i].x - 0.00100f; // 0.0015f de sor3t el sorsar wel namosa
+			enemies[i].x = enemies[i].x - speed;
+			continue;
 		}
-		else {
 
-			enemies[i].hitTimer = enemies[i].hitTimer + 0.016f; // fe player wa2f w hayebd2 yerdrb el enemy ba3d kol second
-			if (enemies[i].hitTimer >= 1.0f) {
-				if (players[player].type != DEFENSE)
-					enemies[i].health = enemies[i].health - 1;   //  el player beyedrab el awel. lw el player msh Teta el enemy beya5od damage by 1 we Teta defense player fa msh bet attack
+		enemies[i].hitTimer = enemies[i].hitTimer + 0.016f;
+		if (enemies[i].hitTimer < 1.0f)
+			continue;
+		enemies[i].hitTimer = 0;
 
-				if (enemies[i].health > 0) {   //  el enemy beyedrab bas lw lesa 3ayesh ba3d darbet el player
-					if (enemies[i].type == HARD)
-						players[player].health = players[player].health - 2; // 3alashan enemy hard fa el player bey5od damage by 2
-					else
-						players[player].health = players[player].health - 1; // el player bey5od damage by 1 3ady
-				}
+		if (players[player].type != DEFENSE)
+			enemies[i].health = enemies[i].health - 1;
 
-				enemies[i].hitTimer = 0;
-			}
-		}
+		if (enemies[i].health > 0)
+			players[player].health = players[player].health - damage;
 	}
 }
-void EnemiesShoot()   // namoosa wel sorsar beyedrabo men b3eed kol 2 seconds
+void Enemiesbttrb()   
 {
 	for (int i = 0; i < enemies.size(); i++) {
 		if (enemies[i].type == HARD)
-			continue;   // el cat mabtedrabsh men b3eed
-		if (PlayerOdamEnemy(enemies[i]) != -1) continue; // lama el namosa tewsl lel player tebtl t shoot 
+			continue;   
+
+		if (PlayerOdamEnemy(enemies[i]) != -1)
+			continue; 
 		enemies[i].shootTimer = enemies[i].shootTimer + 0.016f;
+
 		if (enemies[i].shootTimer >= 5.0f) {
 			Bullet b;
 			b.lane = enemies[i].lane;
 			b.x = enemies[i].x;
-			b.high = (enemies[i].type == EASY);   // namoosa fo2, sorsar ta7t
+			b.high = (enemies[i].type == EASY);   
 			bullets.push_back(b);
 			enemies[i].shootTimer = 0;
 		}
 	}
 }
 
-void MoveBullets()
+void threkelBullets()
 {
 
 	for (int i = bullets.size() - 1; i >= 0; i--) {
-		bullets[i].x = bullets[i].x - 0.0050f;   // el darba betemshy shemal
+		bullets[i].x = bullets[i].x - 0.0050f;   // 
 
 		bool etshalet = false;
 
@@ -688,9 +688,9 @@ void MoveBullets()
 			if (players[p].lane != bullets[i].lane) 
 				continue;
 			if (bullets[i].x - players[p].x > 0.05f) 
-				continue;    // lesa mawseltsh
+				continue;    
 			if (players[p].x - bullets[i].x > 0.05f) 
-				continue;    // 3adet 5alas
+				continue;    
 
 			// dodge: duck lel high, jump lel low (Teta mabt-dodge-sh)
 			if (bullets[i].high && players[p].state == 2) 
@@ -698,33 +698,31 @@ void MoveBullets()
 			if (!bullets[i].high && players[p].state == 1) 
 				continue;
 
-			players[p].health = players[p].health - 1;   // etdarab
+			players[p].health = players[p].health - 1;   
 			etshalet = true;
 			break;
 		}
 
-		if (bullets[i].x < -0.75f) etshalet = true;      // 5arget mel lane
+		if (bullets[i].x < -0.75f) etshalet = true;      
 
 		if (etshalet) bullets.erase(bullets.begin() + i);
 	}
 }
 
 
-void RemoveDead()
+void sheelelDead()
 {
-	// enemies mayteen -> coin 3al ard
+	
 	for (int i = enemies.size() - 1; i >= 0; i--) {
 		if (enemies[i].health <= 0) {
-			FloorCoin c;
-			c.lane = enemies[i].lane;
-			c.x = enemies[i].x;
-			floorCoins.push_back(c);
+			FloorCoin coin;
+			coin.lane = enemies[i].lane;
+			coin.x = enemies[i].x;
+			floorCoins.push_back(coin);
 
 			enemies.erase(enemies.begin() + i);
 		}
 	}
-
-	// players mayteen (w el jumpInfo bta3hom m3ahom)
 	
 	for (int i = players.size() - 1; i >= 0; i--) {
 		if (players[i].health <= 0) {
@@ -733,7 +731,7 @@ void RemoveDead()
 	}
 }
 
-void PickUpCoins()   // player lamas coin -> +10
+void PickUpCoins()   
 {
 	for (int i = floorCoins.size() - 1; i >= 0; i--) {
 		for (int p = 0; p < players.size(); p++) {
@@ -750,7 +748,7 @@ void PickUpCoins()   // player lamas coin -> +10
 	}
 }
 
-void CheckLose()
+void Checklw5srt()
 {
 	for (int i = 0; i < enemies.size(); i++) {
 		if (enemies[i].x <= -0.75f) {
@@ -760,33 +758,39 @@ void CheckLose()
 	}
 }
 
-void UpdateEnemies()   // kol el enemy logic kol frame
+void UpdateEnemies()   
 {
 	if (lost || won) 
 		return;   // el game 5eles -> kol 7aga wa2fa
 
 	UpdateWaves();
-	MoveAndFight();
-	EnemiesShoot();
-	MoveBullets();
-	RemoveDead();
-	CheckLose();
+	ethrkwdrb();
+	Enemiesbttrb();
+	threkelBullets();
+	sheelelDead();
+	PickUpCoins();
+	Checklw5srt();
 }
 
 
 
-void RasmElEnemy(EnemyDescription enemy)
+void RasmEnemywahed(EnemyDescription enemy)
 {
 	float y = CenterKolLane[enemy.lane];
 
-	if (enemy.type == EASY)        
-		Namoosa(enemy.x, y + 0.08f);   // fo2 lane 1
-	else if (enemy.type == MEDIUM) 
-		SorSar(enemy.x, y - 0.10f);    // ta7t lane 2
-	else                       
-		Cat(enemy.x, y - 0.06f); // lane 3
+	glUniform1f(makanelred, (5 - enemy.health) * 0.15f);   //  kol ma ya5od damage b 0.15 el dm y2l we yeb2a ahmar aktar
 
-	// health (dark red)
+
+	if (enemy.type == EASY)        
+		Namoosa(enemy.x, y + 0.08f);   // fo2 fe lane 1
+	else if (enemy.type == MEDIUM) 
+		SorSar(enemy.x, y - 0.10f);    // ta7t fe lane 2
+	else                       
+		Cat(enemy.x, y - 0.06f); //fe lane 3
+
+	glUniform1f(makanelred, 0.0f);                       
+
+
 	float barY = CenterKolLane[enemy.lane] + 0.165f;
 	float startX = enemy.x - (enemy.health - 1) * 0.009f;
 	for (int i = 0; i < enemy.health; i++) {
@@ -794,18 +798,24 @@ void RasmElEnemy(EnemyDescription enemy)
 	}
 }
 
-void DrawEnemies()
+void Rasmkolhaga()
 {
 	for (int i = 0; i < enemies.size(); i++) {
-		RasmElEnemy(enemies[i]);
+		RasmEnemywahed(enemies[i]);
 	}
 
 	for (int i = 0; i < bullets.size(); i++) {
 		float y = CenterKolLane[bullets[i].lane];
 		if (bullets[i].high) 
-			DrawingCircle(bullets[i].x, y + 0.08f, 0.02f, 0.035f, 0.17f, 0.17f, 0.17f);       // namoosa: dark circle fo2
+			DrawingCircle(bullets[i].x, y + 0.08f, 0.02f, 0.035f, 0.17f, 0.17f, 0.17f);      
 		else                 
-			DrawingRectangles(bullets[i].x, y - 0.13f, 0.02f, 0.035f, 0.90f, 0.80f, 0.55f);  // sorsar: beige square ta7t
+			DrawingRectangles(bullets[i].x, y - 0.13f, 0.02f, 0.035f, 0.90f, 0.80f, 0.55f);  
+	}
+
+	for (int i = 0; i < floorCoins.size(); i++) {   // ersem kol coin 3al ard
+		float coinX = floorCoins[i].x;
+		float coinY = CenterKolLane[floorCoins[i].lane] - 0.12f;
+		DrawingCircle(coinX, coinY, 0.035f, 0.062f, 0.88f, 0.65f, 0.15f);   
 	}
 
 	
@@ -891,6 +901,7 @@ int main() {
 	offset = glGetUniformLocation(shaderProgram, "offset");
 	scale = glGetUniformLocation(shaderProgram, "scale");
 	colors = glGetUniformLocation(shaderProgram, "color");
+	makanelred = glGetUniformLocation(shaderProgram, "red");
 	// el program ma3ah nos5a, fa mesh me7tagenhom
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -947,7 +958,7 @@ int main() {
 
 
 	// Yahya's starting his part
-	srand((unsigned)time(0));
+	srand((unsigned)time(0)); // bet hepl rand ely fo2 t spawn random enemy fe random lanes 3ashan rand ely fo2 heya fixed fa hatnzl fel lan x msln same enemies
 	glfwSetKeyCallback(window, KeyPress);
 	// Yahya's ending his part
 
@@ -1026,9 +1037,9 @@ int main() {
 
 
 		// Yahya's starting his part
-		YahyaPlayers();
+		zbttjumpduckplayer();
 		UpdateEnemies();
-		DrawEnemies();
+		Rasmkolhaga();
 		// Yahya's ending his part
 
 
