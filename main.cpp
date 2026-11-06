@@ -317,17 +317,18 @@ void DosetElMouse(GLFWwindow* window, int button, int action, int mods)
 	}
 }
 
-//fix fix fix
-float CenterKolLane[3] = { -0.03f, -0.42f, -0.81f };   // el y bta3 nos kol lane
-void DrawLaneBorder(int lane, float r, float g, float b)
+
+float CenterKolLane[3] = { -0.03f, -0.42f, -0.81f };   // feha center y le kol lane 3alashn ba3dha arsem right left up down aashan a highlight el rasm da
+void Ersem3alBorderLane(int lane, float r, float g, float b)
 {
 	float y = CenterKolLane[lane];   // nos el lane
-
 	DrawingRectangles(0.125f, y + 0.189f, 1.75f, 0.012f, r, g, b);   // fo2 
 	DrawingRectangles(0.125f, y - 0.189f, 1.75f, 0.012f, r, g, b);   // ta7t 
 	DrawingRectangles(-0.7465f, y, 0.007f, 0.39f, r, g, b);   // shemal 
 	DrawingRectangles(0.9965f, y, 0.007f, 0.39f, r, g, b);   // ymen 
 }
+
+// wahba el 3amel el block el taht 
 const char* letterNames = "YOULSEGdJbPArqIt";  // leh el letters de bec dool kol eli hn7tgom fel menues eli homa :YOU lose, good job , play,quit, Replay
 
 //  dol 8 segments 7ashan el letters eli fel menue wel pop ups a4an nktbhom
@@ -376,11 +377,10 @@ void DrawWord(const char* word, float x, float y, float s, float r, float g, flo
 		DrawLetter(word[i], x + i * 0.055f * s, y, s, r, g, b);   // letter i, i gaps to the right
 	}
 }
+//wahba el 3amel el fl block de
 
 
-// which of the 7 bars are ON for each digit 0-9
-// order of the columns:   a(top)  b(top-right)  c(bottom-right)  d(bottom)  e(bottom-left)  f(top-left)  g(middle)
-bool digitSegments[10][7] = {
+bool digitSegments[10][7] = { // le rasm el coins mainly 
 	//  a      b      c      d      e      f      g
 	{ true,  true,  true,  true,  true,  true,  false },   // 0
 	{ false, true,  true,  false, false, false, false },   // 1
@@ -394,56 +394,61 @@ bool digitSegments[10][7] = {
 	{ true,  true,  true,  true,  false, true,  true }    // 9
 };
 
-// draws one digit (0-9) with its centre at (cx, cy), s = size (1 = normal)
-void DrawDigit(int digit, float cx, float cy, float s, float r, float g, float b)
+// barsem el digit fe fe coin x position w coin y position b size s 
+void RasmetElDigit(int digit, float cx, float cy, float s, float r, float g, float b)
 {
 	// horizontal bars
-	if (digitSegments[digit][0]) DrawingRectangles(cx, cy + 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);   // a: top
-	if (digitSegments[digit][6]) DrawingRectangles(cx, cy, 0.04f * s, 0.012f * s, r, g, b);   // g: middle
-	if (digitSegments[digit][3]) DrawingRectangles(cx, cy - 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);   // d: bottom
+	if (digitSegments[digit][0]) 
+		DrawingRectangles(cx, cy + 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);   // a: top
+	if (digitSegments[digit][6]) 
+		DrawingRectangles(cx, cy, 0.04f * s, 0.012f * s, r, g, b);   // g: middle
+	if (digitSegments[digit][3])
+		DrawingRectangles(cx, cy - 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);   // d: bottom
 
 	// vertical bars
-	if (digitSegments[digit][5]) DrawingRectangles(cx - 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // f: upper left
-	if (digitSegments[digit][1]) DrawingRectangles(cx + 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // b: upper right
-	if (digitSegments[digit][4]) DrawingRectangles(cx - 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // e: lower left
-	if (digitSegments[digit][2]) DrawingRectangles(cx + 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // c: lower right
+	if (digitSegments[digit][5]) 
+		DrawingRectangles(cx - 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // f: upper left
+	if (digitSegments[digit][1]) 
+		DrawingRectangles(cx + 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // b: upper right
+	if (digitSegments[digit][4]) 
+		DrawingRectangles(cx - 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // e: lower left
+	if (digitSegments[digit][2]) 
+		DrawingRectangles(cx + 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // c: lower right
 }
 
 // draws a whole number (0 to 999), starting at x and going right, s = size
-void DrawNumber(int number, float x, float y, float s, float r, float g, float b)
+void RasmetRakamEl3ayzeno(int number, float x, float y, float s, float r, float g, float b)
 {
 	int hundreds = number / 100;
 	int tens = (number / 10) % 10;
 	int ones = number % 10;
 
-	float gap = 0.055f * s;              // smaller digits -> smaller gap
+	float gap = 0.055f * s;            
 
 	if (number >= 100) {
-		DrawDigit(hundreds, x, y, s, r, g, b);   // pass the size along
+		RasmetElDigit(hundreds, x, y, s, r, g, b);   
 		x = x + gap;
 	}
 	if (number >= 10) {
-		DrawDigit(tens, x, y, s, r, g, b);
+		RasmetElDigit(tens, x, y, s, r, g, b);
 		x = x + gap;
 	}
-	DrawDigit(ones, x, y, s, r, g, b);
+	RasmetElDigit(ones, x, y, s, r, g, b);
 }
-
-//fix fix fix
 void RasmetElCard()
 {
 	DrawingRectangles(-0.90f, 0.82f, 0.13f, 0.234f, 0.45f, 0.30f, 0.18f);
 	DrawingRectangles(-0.90f, 0.82f, 0.117f, 0.215f, 0.98f, 0.94f, 0.85f);
 	Mama(-0.90f, 0.835f, 0.39f);
-	DrawNumber(prices[MELEE], -0.913f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
+	RasmetRakamEl3ayzeno(prices[MELEE], -0.913f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
 	DrawingRectangles(-0.75f, 0.82f, 0.13f, 0.234f, 0.45f, 0.30f, 0.18f);
 	DrawingRectangles(-0.75f, 0.82f, 0.117f, 0.215f, 0.98f, 0.94f, 0.85f);
 	Brother(-0.75f, 0.835f, 0.45f);
-	DrawNumber(prices[RANGED], -0.763f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
+	RasmetRakamEl3ayzeno(prices[RANGED], -0.763f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
 	DrawingRectangles(-0.60f, 0.82f, 0.13f, 0.234f, 0.45f, 0.30f, 0.18f);
 	DrawingRectangles(-0.60f, 0.82f, 0.117f, 0.215f, 0.98f, 0.94f, 0.85f);
 	Teta(-0.60f, 0.835f, 0.45f);
-	DrawNumber(prices[DEFENSE], -0.613f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
+	RasmetRakamEl3ayzeno(prices[DEFENSE], -0.613f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
 }
 float JumpDuckOffset(int state, float time) { // beyshb how high el jump we how lower el duck
 	if (state == 1) 
@@ -567,8 +572,8 @@ void MoveBrotherBullets()
 void RasmBrotherBullets()
 {
 	for (int i = 0; i < playerBullets.size(); i++) {
-		float y = CenterKolLane[playerBullets[i].lane] - 0.03f;   // 3ala 3elw el spray can
-		DrawingCircle(playerBullets[i].x, y, 0.025f, 0.044f, 0.25f, 0.64f, 0.30f);   // green spray
+		float y = CenterKolLane[playerBullets[i].lane] - 0.03f;   
+		DrawingCircle(playerBullets[i].x, y, 0.025f, 0.044f, 0.25f, 0.64f, 0.30f);   
 	}
 }
 
@@ -814,7 +819,7 @@ void RemoveDead()
 	}
 }
 
-void PickUpCoins()   // player lamas coin -> +10
+void PickUpCoins()   // player lamas coin -> +30
 {
 	for (int i = floorCoins.size() - 1; i >= 0; i--) {
 		for (int p = 0; p < players.size(); p++) {
@@ -1073,10 +1078,10 @@ int main() {
 		for (int i = 0; i < 3; i++) {
 
 			if (ElLinesSelected[i] == true) {          // da aashan y highlight el line el ya hy hover aaleh ya hy select it
-				DrawLaneBorder(i, 1.0f, 0.92f, 0.45f);
+				Ersem3alBorderLane(i, 1.0f, 0.92f, 0.45f);
 			}
 			else if (i == ElcursorFeen) {
-				DrawLaneBorder(i, 1.0f, 0.92f, 0.45f);
+				Ersem3alBorderLane(i, 1.0f, 0.92f, 0.45f);
 			}
 		}
 		for (int i = 0; i < 3; i++) {          // i = 0 MELEE, 1 RANGED, 2 DEFENSE
@@ -1094,14 +1099,15 @@ int main() {
 			//RasmElBoughtPlayer(players[i]);
 		//}
 
-		DrawingCircle(0.80f, 0.875f, 0.05f, 0.089f, 0.88f, 0.65f, 0.15f);   // coin icon
-		DrawNumber(coin, 0.86f, 0.875f, 1.0f, 0.93f, 0.45f, 0.15f);   // size 1 = normal              
+		DrawingCircle(0.80f, 0.875f, 0.05f, 0.089f, 0.88f, 0.65f, 0.15f);   
+		RasmetRakamEl3ayzeno(coin, 0.86f, 0.875f, 1.0f, 0.93f, 0.45f, 0.15f);                
 
 		RasmetElCard();
 		MovementElplayers();
 		BrotherYedrab();
 		MoveBrotherBullets();
 		RasmBrotherBullets();
+		PickUpCoins();
 		Pot(-0.875,-0.42);
 		Window(-0.30f, 0.55f);
 		Clock(0.0f, 0.72f);
