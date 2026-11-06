@@ -3,6 +3,9 @@
 #include<GLFW/glfw3.h>  // de lel window w el input
 #include <cmath> // de lel math functions e7na 3awzenha a4an el sin wel cos lel circle
 #include <vector> // including it aashan a2dar a3ml list el feha la3ba fel lines
+#include <windows.h>
+#include <mmsystem.h>
+#pragma comment(lib, "winmm.lib")
 
 // el vertex shader: by2ol kol no2ta tro7 fen 3al shasha  doool GLSL LANGUAGE FOR GPU PRORGRAM // GPU PROGRAM IS SHADER 
 const char* vertexShaderSource = "#version 330 core\n"
@@ -28,6 +31,14 @@ const char* fragmentShaderSource = "#version 330 core\n"
 GLuint TriangleVAO, RectangleVAO, TriangleVBO, RectangleVBO, CircleVAO, CircleVBO;
 
 GLint offset, scale, colors;
+
+int screen = 0;
+int cutFrame = 0;
+int wave = 1;                       // 1, 2 aw 3
+int waveSize[3] = { 3, 5, 10 };     // kam enemy fe kol wave
+int spawnedInWave = 0;              // tala3na kam enemy fel wave di
+float spawnTimer = 0.0f;
+
 
 // hn3ml function testahl 3lena bdl mn3ed kol 4ewaya hn3ml wa7d lel rectangle we wa7d lel circle we by5do inputes we bytl3o el shapes . bnendh 3lehom fel while loop
 
@@ -114,7 +125,7 @@ void Pot(float x, float y) {
 }
 void Window(float x, float y) {
 	DrawingRectangles(x, y, 0.28f, 0.40f, 0.95f, 0.95f, 0.92f);          // white frame
-	
+
 	DrawingRectangles(x, y, 0.012f, 0.35f, 0.95f, 0.95f, 0.92f);         // standing bar
 	DrawingRectangles(x, y, 0.24f, 0.02f, 0.95f, 0.95f, 0.92f);          // flat bar
 	DrawingRectangles(x, y - 0.21f, 0.32f, 0.03f, 0.55f, 0.35f, 0.20f);  // wooden sill
@@ -127,14 +138,21 @@ void Clock(float x, float y) {
 }
 void Fridge(float x, float y) {
 	DrawingRectangles(x, y, 0.20f, 0.62f, 0.92f, 0.93f, 0.95f);                   // white body
-	
+
 	DrawingRectangles(x - 0.07f, y, 0.012f, 0.14f, 0.60f, 0.62f, 0.65f);          // fridge handle
-	
+
 }
 void Door(float x, float y) {
 	DrawingRectangles(x, y, 0.22f, 0.68f, 0.40f, 0.25f, 0.15f);                 // dark frame
 	DrawingRectangles(x, y - 0.01f, 0.19f, 0.65f, 0.60f, 0.40f, 0.25f);         // door
 	DrawingCircle(x + 0.065f, y - 0.02f, 0.02f, 0.036f, 0.90f, 0.75f, 0.30f);   // gold knob
+}
+void Shelf(float x, float y) {
+	DrawingRectangles(x, y, 0.24f, 0.02f, 0.55f, 0.35f, 0.20f);                   // wooden plank
+	DrawingRectangles(x - 0.09f, y - 0.03f, 0.015f, 0.04f, 0.45f, 0.28f, 0.16f);   // left bracket
+	DrawingRectangles(x + 0.09f, y - 0.03f, 0.015f, 0.04f, 0.45f, 0.28f, 0.16f);   // right bracket
+	DrawingRectangles(x - 0.06f, y + 0.05f, 0.05f, 0.08f, 0.85f, 0.35f, 0.25f);    // red jar
+	DrawingRectangles(x + 0.05f, y + 0.045f, 0.04f, 0.07f, 0.95f, 0.80f, 0.35f);   // yellow jar
 }
 
 int mamaHealth = 5;
@@ -275,6 +293,23 @@ int GebElCard(float mouseX, float mouseY)
 	}
 	return card;
 }
+
+void ResetGame() {
+	players.clear();
+	enemies.clear();
+	bullets.clear();
+	playerBullets.clear();
+	floorCoins.clear();
+	coin = 30;
+	wave = 1;
+	spawnedInWave = 0;
+	spawnTimer = 0.0f;
+	lost = false;
+	won = false;
+	ElLinesSelected[0] = false;
+	ElLinesSelected[1] = false;
+	ElLinesSelected[2] = false;
+}
 void DosetElMouse(GLFWwindow* window, int button, int action, int mods)
 {
 	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
@@ -284,6 +319,27 @@ void DosetElMouse(GLFWwindow* window, int button, int action, int mods)
 		glfwGetCursorPos(window, &PixelelX, &PixelelY);   // glfw bygeb el position fel window
 		float mouseX = (float)((PixelelX / 1280.0f) * 2.0f - 1.0f);
 		float mouseY = (float)(1.0f - (PixelelY / 720.0f) * 2.0f);
+
+		if (screen == 0) {
+			if (mouseX >= -0.2f && mouseX <= 0.2f && mouseY >= 0.02f && mouseY <= 0.18f)     // PLAY
+				screen = 1;
+			if (mouseX >= -0.2f && mouseX <= 0.2f && mouseY >= -0.23f && mouseY <= -0.07f)   // qUIt
+				glfwSetWindowShouldClose(window, true);
+			return;
+		}
+
+		if (screen == 1) return;
+
+		if (screen == 3) {
+			if (mouseX >= -0.32f && mouseX <= -0.02f && mouseY >= -0.18f && mouseY <= -0.02f) {   // PLAY
+				screen = 2;
+			}
+			if (mouseX >= 0.02f && mouseX <= 0.32f && mouseY >= -0.18f && mouseY <= -0.02f) {     // rEPLAY
+				ResetGame();
+				screen = 2;
+			}
+			return;
+		}
 
 		int lane = GebElLane(mouseX, mouseY);
 		if (lane != -1)
@@ -331,7 +387,7 @@ void DrawLaneBorder(int lane, float r, float g, float b)
 const char* letterNames = "YOULSEGdJbPArqIt";  // leh el letters de bec dool kol eli hn7tgom fel menues eli homa :YOU lose, good job , play,quit, Replay
 
 //  dol 8 segments 7ashan el letters eli fel menue wel pop ups a4an nktbhom
-bool letterSegments[16][7] = {            
+bool letterSegments[16][7] = {
 	//  a      b      c      d      e      f      g
 	{ false, true,  true,  true,  false, true,  true },  // 0  Y
 	{ true,  true,  true,  true,  true,  true,  false },  // 1  O
@@ -352,14 +408,14 @@ bool letterSegments[16][7] = {
 };
 void DrawLetter(char letter, float cx, float cy, float s, float r, float g, float b)
 {
-	
-	int row = -1;                             
-	for (int i = 0; i < 16; i++) {               
+
+	int row = -1;
+	for (int i = 0; i < 16; i++) {
 		if (letterNames[i] == letter) row = i;   //  hena it look at this char in here YOULSEGdJbPArqIt"
 	}
-	if (row == -1) return;                       
+	if (row == -1) return;
 
-	
+
 	if (letterSegments[row][0]) DrawingRectangles(cx, cy + 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);                // a: top  the  
 	if (letterSegments[row][6]) DrawingRectangles(cx, cy, 0.04f * s, 0.012f * s, r, g, b);                            // g: middle
 	if (letterSegments[row][3]) DrawingRectangles(cx, cy - 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);                // d: bottom
@@ -446,16 +502,16 @@ void RasmetElCard()
 	DrawNumber(prices[DEFENSE], -0.613f, 0.735f, 0.4f, 0.93f, 0.45f, 0.15f);
 }
 float JumpDuckOffset(int state, float time) { // beyshb how high el jump we how lower el duck
-	if (state == 1) 
+	if (state == 1)
 		return 0.15f * sin(3.14159f * time / 0.6f);
-	if (state == 2) 
+	if (state == 2)
 		return -0.06f;
 	return 0;
 }
 void RasmElBoughtPlayer(PlayerDescription p)			// betersem player wa7ed: el character + el health bar beta3o
 {
 	float up = JumpDuckOffset(p.state, p.stateTime);   //  ad eh el player yetla3 aw yenzel
-	float y = CenterKolLane[p.lane] - 0.04f + up;      
+	float y = CenterKolLane[p.lane] - 0.04f + up;
 
 	if (p.type == MELEE)
 		Mama(p.x, y, 0.75f);
@@ -494,7 +550,7 @@ void MovementElplayers()
 
 	if (lost || won)
 		return;
-	for(int i = 0;i <players.size(); i++)
+	for (int i = 0;i < players.size(); i++)
 	{
 		if (players[i].type != DEFENSE && players[i].x < 0.93f && !EnemyOdamPlayer(players[i]))
 		{
@@ -504,7 +560,7 @@ void MovementElplayers()
 }
 
 bool HalEnemeyOdamy(PlayerDescription player)
-	{
+{
 	for (int i = 0; i < enemies.size(); i++) {
 		if (enemies[i].lane != player.lane)
 			continue;
@@ -512,7 +568,7 @@ bool HalEnemeyOdamy(PlayerDescription player)
 			return true;
 	}
 	return false;
-	}
+}
 
 void BrotherYedrab()   // el Brother beyedrab men b3eed kol 1.5 seconds
 {
@@ -579,31 +635,36 @@ void RasmBrotherBullets()
 
 
 //Yahya's starting his part 
-  
+
 
 
 
 void KeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (action != GLFW_PRESS) 
+	if (action != GLFW_PRESS)
 		return;
+
+	if (key == GLFW_KEY_ESCAPE) {
+		if (screen == 2) screen = 3;
+		else if (screen == 3) screen = 2;
+		return;
+	}
+	if (screen != 2) return;
 
 	int newState = 0;
-	if (key == GLFW_KEY_W || key == GLFW_KEY_UP)   
+	if (key == GLFW_KEY_W || key == GLFW_KEY_UP)
 		newState = 1;// jump
-	if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN) 
+	if (key == GLFW_KEY_S || key == GLFW_KEY_DOWN)
 		newState = 2;   // duck
-	if (newState == 0) 
+	if (newState == 0)
 		return;
 
-	
-
 	for (int i = 0; i < players.size(); i++) { // hena bnshof mn el players ely msh bey duck or jump
-		if (players[i].type == DEFENSE) 
+		if (players[i].type == DEFENSE)
 			continue;          // Teta mabetjumpsh
-		if (!ElLinesSelected[players[i].lane]) 
+		if (!ElLinesSelected[players[i].lane])
 			continue;   // el lane msh selected
-		if (players[i].state != 0) 
+		if (players[i].state != 0)
 			continue;              // already jumping/ducking
 
 		players[i].state = newState;
@@ -613,7 +674,7 @@ void KeyPress(GLFWwindow* window, int key, int scancode, int action, int mods)
 
 void UpdateJumpDuck(int& state, float& time)   // el jump/duck by5las ba3d 0.6 seconds
 {
-	if (state == 0) 
+	if (state == 0)
 		return;
 	time = time + 0.016f;
 	if (time >= 0.6f) {
@@ -638,20 +699,16 @@ void YahyaPlayers()   // update el jump + ersem el players b-function Yassin
 
 
 
-int wave = 1;                       // 1, 2 aw 3
-int waveSize[3] = { 3, 5, 10 };     // kam enemy fe kol wave
-int spawnedInWave = 0;              // tala3na kam enemy fel wave di
-float spawnTimer = 0.0f;
 
 void SpawnEnemy()
 {
 	EnemyDescription enemy;
 
-	if (wave == 1) 
+	if (wave == 1)
 		enemy.type = EASY;                                // wave 1: namoosa bas
-	if (wave == 2) 
+	if (wave == 2)
 		enemy.type = (EnemyType)(spawnedInWave % 2);      // wave 2: namoosa w sorsar
-	if (wave == 3) 
+	if (wave == 3)
 		enemy.type = (EnemyType)(spawnedInWave % 3);      // wave 3: el talata
 
 	enemy.lane = rand() % 3;      // rand betnzl 3 enemies f random lane
@@ -659,9 +716,9 @@ void SpawnEnemy()
 	enemy.hitTimer = 0;
 	enemy.shootTimer = 0;
 
-	if (enemy.type == HARD) 
+	if (enemy.type == HARD)
 		enemy.health = 7; //lw wave hard el enemies el health bt3hm beyb3a 7 bdl 5
-	else                
+	else
 		enemy.health = 5;
 
 	enemies.push_back(enemy);
@@ -698,11 +755,11 @@ void UpdateWaves()
 int PlayerOdamEnemy(EnemyDescription enemy) // anhy player wa2ef 2odam el enemy da fe nafs el lane? -1 da lw mafesh enemy odam el player 
 
 {
-	for (int i = 0; i < players.size(); i++) { 
-		if (players[i].lane != enemy.lane) 
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i].lane != enemy.lane)
 			continue;
 		float masafa = enemy.x - players[i].x; // lw rg3t positive value yeb2a el player 3ala el shemal
-		if (masafa >= 0 && masafa < 0.15f) 
+		if (masafa >= 0 && masafa < 0.15f)
 			return i; // betrg3 player number
 	}
 	return -1;
@@ -766,17 +823,17 @@ void MoveBullets()
 		bool etshalet = false;
 
 		for (int p = 0; p < players.size(); p++) {
-			if (players[p].lane != bullets[i].lane) 
+			if (players[p].lane != bullets[i].lane)
 				continue;
-			if (bullets[i].x - players[p].x > 0.05f) 
+			if (bullets[i].x - players[p].x > 0.05f)
 				continue;    // lesa mawseltsh
-			if (players[p].x - bullets[i].x > 0.05f) 
+			if (players[p].x - bullets[i].x > 0.05f)
 				continue;    // 3adet 5alas
 
 			// dodge: duck lel high, jump lel low (Teta mabt-dodge-sh)
-			if (bullets[i].high && players[p].state == 2) 
+			if (bullets[i].high && players[p].state == 2)
 				continue;
-			if (!bullets[i].high && players[p].state == 1) 
+			if (!bullets[i].high && players[p].state == 1)
 				continue;
 
 			players[p].health = players[p].health - 1;   // etdarab
@@ -806,7 +863,7 @@ void RemoveDead()
 	}
 
 	// players mayteen (w el jumpInfo bta3hom m3ahom)
-	
+
 	for (int i = players.size() - 1; i >= 0; i--) {
 		if (players[i].health <= 0) {
 			players.erase(players.begin() + i);
@@ -843,7 +900,7 @@ void CheckLose()
 
 void UpdateEnemies()   // kol el enemy logic kol frame
 {
-	if (lost || won) 
+	if (lost || won)
 		return;   // el game 5eles -> kol 7aga wa2fa
 
 	UpdateWaves();
@@ -860,11 +917,11 @@ void RasmElEnemy(EnemyDescription enemy)
 {
 	float y = CenterKolLane[enemy.lane];
 
-	if (enemy.type == EASY)        
+	if (enemy.type == EASY)
 		Namoosa(enemy.x, y + 0.08f);   // fo2 lane 1
-	else if (enemy.type == MEDIUM) 
+	else if (enemy.type == MEDIUM)
 		SorSar(enemy.x, y - 0.10f);    // ta7t lane 2
-	else                       
+	else
 		Cat(enemy.x, y - 0.06f); // lane 3
 
 	// health (dark red)
@@ -883,13 +940,52 @@ void DrawEnemies()
 
 	for (int i = 0; i < bullets.size(); i++) {
 		float y = CenterKolLane[bullets[i].lane];
-		if (bullets[i].high) 
+		if (bullets[i].high)
 			DrawingCircle(bullets[i].x, y + 0.08f, 0.02f, 0.035f, 0.17f, 0.17f, 0.17f);       // namoosa: dark circle fo2
-		else                 
+		else
 			DrawingRectangles(bullets[i].x, y - 0.13f, 0.02f, 0.035f, 0.90f, 0.80f, 0.55f);  // sorsar: beige square ta7t
 	}
 
-	
+
+}
+void DrawMainMenu() {
+	DrawingRectangles(0.0f, 0.1f, 0.4f, 0.16f, 0.48f, 0.31f, 0.63f);
+	DrawWord("PLAY", -0.1f, 0.1f, 1.2f, 1.0f, 1.0f, 1.0f);
+	DrawingRectangles(0.0f, -0.15f, 0.4f, 0.16f, 0.45f, 0.30f, 0.18f);
+	DrawWord("qUIt", -0.1f, -0.15f, 1.2f, 1.0f, 1.0f, 1.0f);
+}
+
+void DrawPauseMenu() {
+	DrawingRectangles(0.0f, 0.0f, 1.0f, 0.8f, 0.15f, 0.12f, 0.10f);
+	DrawWord("PAUSEd", -0.21f, 0.25f, 1.5f, 1.0f, 1.0f, 1.0f);
+
+	DrawingRectangles(-0.17f, -0.1f, 0.3f, 0.16f, 0.48f, 0.31f, 0.63f);
+	DrawWord("PLAY", -0.236f, -0.1f, 0.8f, 1.0f, 1.0f, 1.0f);
+
+	DrawingRectangles(0.17f, -0.1f, 0.3f, 0.16f, 0.45f, 0.30f, 0.18f);
+	DrawWord("rEPLAY", 0.06f, -0.1f, 0.8f, 1.0f, 1.0f, 1.0f);
+}
+
+void DrawCutscene() {
+	Window(-0.30f, 0.55f);
+	Clock(0.0f, 0.72f);
+	Shelf(0.0f, 0.40f);
+	Fridge(0.30f, 0.48f);
+	Door(0.60f, 0.51f);
+	DrawingRectangles(0.0f, -0.6f, 2.0f, 0.8f, 0.79f, 0.51f, 0.31f);   // floor
+	Pot(-0.5f, -0.35f);
+
+	Mama(-0.25f, -0.35f, 1.4f);
+
+	float mx = 1.1f - cutFrame * 0.003f;
+	if (mx < 0.3f) mx = 0.3f;
+	Namoosa(mx, -0.05f);
+
+	if (cutFrame == 0)   PlaySoundA("voices/cut_01_mama.wav", NULL, SND_FILENAME | SND_ASYNC);
+	if (cutFrame == 420) PlaySoundA("voices/cut_02_mosquito.wav", NULL, SND_FILENAME | SND_ASYNC);
+
+	cutFrame = cutFrame + 1;
+	if (cutFrame >= 720) screen = 2;
 }
 
 
@@ -1040,99 +1136,87 @@ int main() {
 		glClearColor(0.95f, 0.89f, 0.78f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-
 		glUseProgram(shaderProgram); // 3alashan ne use el program elly 3mlnah bta3 el shader el GLSL eli fo2
 
-		// 5) ersem: esta5dem el program, el no2at, w ersem 3 no2at
-
-		//static shapes first here is the lanes which are made of rectangles hn3ml 3 lanes 
-
-
-
-
-		// lanes
-		DrawingRectangles(0.125f, -0.03f, 1.75f, 0.39f, 0.79f, 0.51f, 0.31f);   // lane 1
-		DrawingRectangles(0.125f, -0.42f, 1.75f, 0.39f, 0.78f, 0.56f, 0.40f);   // lane 2
-		DrawingRectangles(0.125f, -0.81f, 1.75f, 0.39f, 0.79f, 0.51f, 0.31f);   // lane 3
-
-
-
-		if (lost) {
-			DrawingRectangles(0.0f, 0.0f, 1.0f, 0.8f, 0.2f, 0.1f, 0.1f);   
-			DrawWord("YOU LOSE", -0.29f, 0.2f, 1.5f, 1.0f, 1.0f, 1.0f);     
+		if (screen == 0) {
+			DrawMainMenu();
 		}
+		else if (screen == 1) {
+			DrawCutscene();
+		}
+		else {
+			Pot(-0.875, -0.42);
+			Window(-0.30f, 0.55f);
+			Clock(0.0f, 0.72f);
+			Fridge(0.30f, 0.48f);
+			Door(0.60f, 0.51f);
+			Shelf(0.0f, 0.40f);
 
-		// Yassin's Starting Part
-		double PixelelX;
-		double PixelelY;
-		glfwGetCursorPos(window, &PixelelX, &PixelelY);
-		float mouseX = (float)((PixelelX / 1280.0f) * 2.0f - 1.0f);
-		float mouseY = (float)(1.0f - (PixelelY / 720.0f) * 2.0f);
-		int ElcursorFeen = GebElLane(mouseX, mouseY);
+			// lanes
+			DrawingRectangles(0.125f, -0.03f, 1.75f, 0.39f, 0.79f, 0.51f, 0.31f);   // lane 1
+			DrawingRectangles(0.125f, -0.42f, 1.75f, 0.39f, 0.78f, 0.56f, 0.40f);   // lane 2
+			DrawingRectangles(0.125f, -0.81f, 1.75f, 0.39f, 0.79f, 0.51f, 0.31f);   // lane 3
 
-		for (int i = 0; i < 3; i++) {
+			// Yassin's Starting Part
+			double PixelelX;
+			double PixelelY;
+			glfwGetCursorPos(window, &PixelelX, &PixelelY);
+			float mouseX = (float)((PixelelX / 1280.0f) * 2.0f - 1.0f);
+			float mouseY = (float)(1.0f - (PixelelY / 720.0f) * 2.0f);
+			int ElcursorFeen = GebElLane(mouseX, mouseY);
 
-			if (ElLinesSelected[i] == true) {          // da aashan y highlight el line el ya hy hover aaleh ya hy select it
-				DrawLaneBorder(i, 1.0f, 0.92f, 0.45f);
+			for (int i = 0; i < 3; i++) {
+				if (ElLinesSelected[i] == true) {          // da aashan y highlight el line el ya hy hover aaleh ya hy select it
+					DrawLaneBorder(i, 1.0f, 0.92f, 0.45f);
+				}
+				else if (i == ElcursorFeen) {
+					DrawLaneBorder(i, 1.0f, 0.92f, 0.45f);
+				}
 			}
-			else if (i == ElcursorFeen) {
-				DrawLaneBorder(i, 1.0f, 0.92f, 0.45f);
+			for (int i = 0; i < 3; i++) {          // i = 0 MELEE, 1 RANGED, 2 DEFENSE
+				if (coin >= prices[i])             // 3andy floos kfaya lel type da?
+				{
+					unlocked[i] = true;
+				}
+				else
+				{
+					unlocked[i] = false;           // no  -> lock it again (re-lock)
+				}
+			}
+
+			DrawingCircle(0.80f, 0.875f, 0.05f, 0.089f, 0.88f, 0.65f, 0.15f);   // coin icon
+			DrawNumber(coin, 0.86f, 0.875f, 1.0f, 0.93f, 0.45f, 0.15f);   // size 1 = normal
+
+			RasmetElCard();
+			if (screen == 2) {
+				MovementElplayers();
+				BrotherYedrab();
+				MoveBrotherBullets();
+			}
+			RasmBrotherBullets();
+			// Yassin's Ending Part
+
+			// Yahya's starting his part
+			YahyaPlayers();
+			if (screen == 2) {
+				UpdateEnemies();
+			}
+			DrawEnemies();
+			// Yahya's ending his part
+
+			if (lost) {
+				DrawingRectangles(0.0f, 0.0f, 1.0f, 0.8f, 0.2f, 0.1f, 0.1f);
+				DrawWord("YOU LOSE", -0.29f, 0.2f, 1.5f, 1.0f, 1.0f, 1.0f);
+			}
+			if (won) {
+				DrawingRectangles(0.0f, 0.0f, 1.0f, 0.8f, 0.15f, 0.35f, 0.20f);
+				DrawWord("GOOd JOb", -0.29f, 0.2f, 1.5f, 1.0f, 1.0f, 1.0f);
+			}
+
+			if (screen == 3) {
+				DrawPauseMenu();
 			}
 		}
-		for (int i = 0; i < 3; i++) {          // i = 0 MELEE, 1 RANGED, 2 DEFENSE
-			if (coin >= prices[i])             // 3andy floos kfaya lel type da?
-			{
-				unlocked[i] = true;
-			}
-			else
-			{
-				unlocked[i] = false;           // no  -> lock it again (re-lock)
-			}
-		}
-
-		//for (int i = 0; i < players.size(); i++) {  //byresem kol player bought
-			//RasmElBoughtPlayer(players[i]);
-		//}
-
-		DrawingCircle(0.80f, 0.875f, 0.05f, 0.089f, 0.88f, 0.65f, 0.15f);   // coin icon
-		DrawNumber(coin, 0.86f, 0.875f, 1.0f, 0.93f, 0.45f, 0.15f);   // size 1 = normal              
-
-		RasmetElCard();
-		MovementElplayers();
-		BrotherYedrab();
-		MoveBrotherBullets();
-		RasmBrotherBullets();
-		Pot(-0.875,-0.42);
-		Window(-0.30f, 0.55f);
-		Clock(0.0f, 0.72f);
-		
-		Fridge(0.30f, 0.48f);
-		Door(0.60f, 0.51f);
-		// Yassin's Ending Part
-
-		
-		
-
-
-
-		// Yahya's starting his part
-		YahyaPlayers();
-		UpdateEnemies();
-		DrawEnemies();
-		// Yahya's ending his part
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 		glfwSwapBuffers(window);
 	}
