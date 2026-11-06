@@ -40,7 +40,7 @@ int spawnedInWave = 0;              // tala3na kam enemy fel wave di
 float spawnTimer = 0.0f;
 
 
-// hn3ml function testahl 3lena bdl mn3ed kol 4ewaya hn3ml wa7d lel rectangle we wa7d lel circle we by5do inputes we bytl3o el shapes . bnendh 3lehom fel while loop
+
 
 
 void DrawingRectangles(float x, float y, float w, float h, float r, float g, float b) { //  (x,y) dol el offsets , (w,h) dool el scaling factors , (r,g,b) dool lel colors
@@ -95,9 +95,9 @@ void Brother(float x, float y, float s) {
 }
 
 void Namoosa(float x, float y) {
-	DrawingRectangles(x - 0.064f, y, 0.047f, 0.008f, 0.17, 0.17, 0.17); // stinger
-	DrawingCircle(x, y, 0.081f, 0.05f, 0.17, 0.17, 0.17); // body
-	DrawingCircle(x - 0.007f, y + 0.047f, 0.05f, 0.056f, 0.93, 0.93, 0.93); // head
+	DrawingRectangles(x - 0.064f, y, 0.047f, 0.008f, 0.17, 0.17, 0.17);
+	DrawingCircle(x, y, 0.081f, 0.05f, 0.17, 0.17, 0.17); 
+	DrawingCircle(x - 0.007f, y + 0.047f, 0.05f, 0.056f, 0.93, 0.93, 0.93); /
 
 
 }
@@ -108,51 +108,51 @@ void SorSar(float x, float y) {
 
 }
 void Cat(float x, float y) {
-	DrawingRectangles(x + 0.07f, y + 0.047f, 0.016f, 0.111f, 0.85f, 0.47f, 0.12f);   // tail (dark orange)
-	DrawingCircle(x, y, 0.141f, 0.117f, 0.91f, 0.54f, 0.17f);                         // body (orange)
-	DrawingTriangles(x - 0.11f, y + 0.12f, 0.028f, 0.05f, 0.91f, 0.54f, 0.17f);       // left ear
-	DrawingTriangles(x - 0.07f, y + 0.12f, 0.028f, 0.05f, 0.91f, 0.54f, 0.17f);       // right ear
-	DrawingCircle(x - 0.091f, y + 0.041f, 0.069f, 0.122f, 0.94f, 0.60f, 0.24f);       // head (light orange)
+	DrawingRectangles(x + 0.07f, y + 0.047f, 0.016f, 0.111f, 0.85f, 0.47f, 0.12f);
+	DrawingCircle(x, y, 0.141f, 0.117f, 0.91f, 0.54f, 0.17f);
+	DrawingTriangles(x - 0.11f, y + 0.12f, 0.028f, 0.05f, 0.91f, 0.54f, 0.17f);
+	DrawingTriangles(x - 0.07f, y + 0.12f, 0.028f, 0.05f, 0.91f, 0.54f, 0.17f);
+	DrawingCircle(x - 0.091f, y + 0.041f, 0.069f, 0.122f, 0.94f, 0.60f, 0.24f);
 }
 void Pot(float x, float y) {
-	DrawingCircle(x - 0.11f, y + 0.08f, 0.03f, 0.053f, 0.40f, 0.42f, 0.45f);    // left handle
-	DrawingCircle(x + 0.11f, y + 0.08f, 0.03f, 0.053f, 0.40f, 0.42f, 0.45f);    // right handle
-	DrawingRectangles(x, y, 0.20f, 0.30f, 0.62f, 0.64f, 0.67f);                 // big body
-	DrawingRectangles(x, y - 0.165f, 0.16f, 0.03f, 0.35f, 0.36f, 0.38f);         // small base under it
-	DrawingRectangles(x, y + 0.165f, 0.22f, 0.03f, 0.40f, 0.42f, 0.45f);         // lid on top
-	DrawingCircle(x, y + 0.195f, 0.025f, 0.044f, 0.25f, 0.25f, 0.28f);           // lid knob
-	DrawingCircle(x, y + 0.25f, 0.04f, 0.071f, 0.95f, 0.95f, 0.95f);             // steam puff
+	DrawingCircle(x - 0.11f, y + 0.08f, 0.03f, 0.053f, 0.40f, 0.42f, 0.45f);    
+	DrawingCircle(x + 0.11f, y + 0.08f, 0.03f, 0.053f, 0.40f, 0.42f, 0.45f);    
+	DrawingRectangles(x, y, 0.20f, 0.30f, 0.62f, 0.64f, 0.67f);                
+	DrawingRectangles(x, y - 0.165f, 0.16f, 0.03f, 0.35f, 0.36f, 0.38f);         
+	DrawingRectangles(x, y + 0.165f, 0.22f, 0.03f, 0.40f, 0.42f, 0.45f);        
+	DrawingCircle(x, y + 0.195f, 0.025f, 0.044f, 0.25f, 0.25f, 0.28f);           
+	DrawingCircle(x, y + 0.25f, 0.04f, 0.071f, 0.95f, 0.95f, 0.95f);             
 }
 void Window(float x, float y) {
-	DrawingRectangles(x, y, 0.28f, 0.40f, 0.95f, 0.95f, 0.92f);          // white frame
+	DrawingRectangles(x, y, 0.28f, 0.40f, 0.95f, 0.95f, 0.92f);         
 
-	DrawingRectangles(x, y, 0.012f, 0.35f, 0.95f, 0.95f, 0.92f);         // standing bar
-	DrawingRectangles(x, y, 0.24f, 0.02f, 0.95f, 0.95f, 0.92f);          // flat bar
-	DrawingRectangles(x, y - 0.21f, 0.32f, 0.03f, 0.55f, 0.35f, 0.20f);  // wooden sill
+	DrawingRectangles(x, y, 0.012f, 0.35f, 0.95f, 0.95f, 0.92f);       
+	DrawingRectangles(x, y, 0.24f, 0.02f, 0.95f, 0.95f, 0.92f);        
+	DrawingRectangles(x, y - 0.21f, 0.32f, 0.03f, 0.55f, 0.35f, 0.20f);  
 }
 void Clock(float x, float y) {
-	DrawingCircle(x, y, 0.10f, 0.178f, 0.25f, 0.20f, 0.18f);              // dark rim
-	DrawingCircle(x, y, 0.085f, 0.151f, 0.98f, 0.97f, 0.93f);             // white face
-	DrawingRectangles(x, y + 0.03f, 0.006f, 0.06f, 0.25f, 0.20f, 0.18f);  // hand pointing up
-	DrawingRectangles(x + 0.02f, y, 0.04f, 0.008f, 0.25f, 0.20f, 0.18f);  // hand pointing right
+	DrawingCircle(x, y, 0.10f, 0.178f, 0.25f, 0.20f, 0.18f);            
+	DrawingCircle(x, y, 0.085f, 0.151f, 0.98f, 0.97f, 0.93f);            
+	DrawingRectangles(x, y + 0.03f, 0.006f, 0.06f, 0.25f, 0.20f, 0.18f);  
+	DrawingRectangles(x + 0.02f, y, 0.04f, 0.008f, 0.25f, 0.20f, 0.18f); 
 }
 void Fridge(float x, float y) {
-	DrawingRectangles(x, y, 0.20f, 0.62f, 0.92f, 0.93f, 0.95f);                   // white body
+	DrawingRectangles(x, y, 0.20f, 0.62f, 0.92f, 0.93f, 0.95f);                   
 
-	DrawingRectangles(x - 0.07f, y, 0.012f, 0.14f, 0.60f, 0.62f, 0.65f);          // fridge handle
+	DrawingRectangles(x - 0.07f, y, 0.012f, 0.14f, 0.60f, 0.62f, 0.65f);          
 
 }
 void Door(float x, float y) {
-	DrawingRectangles(x, y, 0.22f, 0.68f, 0.40f, 0.25f, 0.15f);                 // dark frame
-	DrawingRectangles(x, y - 0.01f, 0.19f, 0.65f, 0.60f, 0.40f, 0.25f);         // door
-	DrawingCircle(x + 0.065f, y - 0.02f, 0.02f, 0.036f, 0.90f, 0.75f, 0.30f);   // gold knob
+	DrawingRectangles(x, y, 0.22f, 0.68f, 0.40f, 0.25f, 0.15f);                 
+	DrawingRectangles(x, y - 0.01f, 0.19f, 0.65f, 0.60f, 0.40f, 0.25f);        
+	DrawingCircle(x + 0.065f, y - 0.02f, 0.02f, 0.036f, 0.90f, 0.75f, 0.30f);  
 }
 void Shelf(float x, float y) {
-	DrawingRectangles(x, y, 0.24f, 0.02f, 0.55f, 0.35f, 0.20f);                   // wooden plank
-	DrawingRectangles(x - 0.09f, y - 0.03f, 0.015f, 0.04f, 0.45f, 0.28f, 0.16f);   // left bracket
-	DrawingRectangles(x + 0.09f, y - 0.03f, 0.015f, 0.04f, 0.45f, 0.28f, 0.16f);   // right bracket
-	DrawingRectangles(x - 0.06f, y + 0.05f, 0.05f, 0.08f, 0.85f, 0.35f, 0.25f);    // red jar
-	DrawingRectangles(x + 0.05f, y + 0.045f, 0.04f, 0.07f, 0.95f, 0.80f, 0.35f);   // yellow jar
+	DrawingRectangles(x, y, 0.24f, 0.02f, 0.55f, 0.35f, 0.20f);                 
+	DrawingRectangles(x - 0.09f, y - 0.03f, 0.015f, 0.04f, 0.45f, 0.28f, 0.16f);   
+	DrawingRectangles(x + 0.09f, y - 0.03f, 0.015f, 0.04f, 0.45f, 0.28f, 0.16f); 
+	DrawingRectangles(x - 0.06f, y + 0.05f, 0.05f, 0.08f, 0.85f, 0.35f, 0.25f);    
+	DrawingRectangles(x + 0.05f, y + 0.045f, 0.04f, 0.07f, 0.95f, 0.80f, 0.35f);   
 }
 
 int mamaHealth = 5;
@@ -162,7 +162,7 @@ int namoosaHealth = 5;
 int sorsarHealth = 5;
 int catHealth = 7;
 
-void HealthSquares(float x, float y, int health) {  // da el health bar el fo2 el characters . 
+void HealthSquares(float x, float y, int health) {  // da el health bar el fo2 el characters 
 	for (int i = 0; i < health; i++) {
 		DrawingRectangles(x + i * 0.018f, y,
 			0.014f, 0.025f,        // size of one square
@@ -246,7 +246,7 @@ typedef struct PlayerDescription {
 	float shootTimer = 0.0f;
 } PlayerDescription;
 
-std::vector<PlayerDescription> players;   // el list beta3et kol el players (btebda2 empty)
+std::vector<PlayerDescription> players;   // el list beta3et kol el players 
 
 int coin = 30; // intially 30 as maktob fel description 
 int prices[3] = { 10,40,60 }; // prices bta3 kol type
@@ -416,20 +416,20 @@ void DrawLetter(char letter, float cx, float cy, float s, float r, float g, floa
 	if (row == -1) return;
 
 
-	if (letterSegments[row][0]) DrawingRectangles(cx, cy + 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);                // a: top  the  
-	if (letterSegments[row][6]) DrawingRectangles(cx, cy, 0.04f * s, 0.012f * s, r, g, b);                            // g: middle
-	if (letterSegments[row][3]) DrawingRectangles(cx, cy - 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);                // d: bottom
-	if (letterSegments[row][5]) DrawingRectangles(cx - 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // f: upper left
-	if (letterSegments[row][1]) DrawingRectangles(cx + 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // b: upper right
-	if (letterSegments[row][4]) DrawingRectangles(cx - 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // e: lower left
-	if (letterSegments[row][2]) DrawingRectangles(cx + 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   // c: lower right
+	if (letterSegments[row][0]) DrawingRectangles(cx, cy + 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);              
+	if (letterSegments[row][6]) DrawingRectangles(cx, cy, 0.04f * s, 0.012f * s, r, g, b);                            
+	if (letterSegments[row][3]) DrawingRectangles(cx, cy - 0.06f * s, 0.04f * s, 0.012f * s, r, g, b);               
+	if (letterSegments[row][5]) DrawingRectangles(cx - 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);  
+	if (letterSegments[row][1]) DrawingRectangles(cx + 0.02f * s, cy + 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);   
+	if (letterSegments[row][4]) DrawingRectangles(cx - 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);  
+	if (letterSegments[row][2]) DrawingRectangles(cx + 0.02f * s, cy - 0.03f * s, 0.007f * s, 0.06f * s, r, g, b);  
 }
 
 
 void DrawWord(const char* word, float x, float y, float s, float r, float g, float b)
 {
-	for (int i = 0; word[i] != '\0'; i++) {                       // '\0' = the end of the text
-		DrawLetter(word[i], x + i * 0.055f * s, y, s, r, g, b);   // letter i, i gaps to the right
+	for (int i = 0; word[i] != '\0'; i++) {                     
+		DrawLetter(word[i], x + i * 0.055f * s, y, s, r, g, b);  
 	}
 }
 
