@@ -266,7 +266,7 @@ typedef struct PlayerDescription {
 
 std::vector<PlayerDescription> players;   // el list beta3et kol el players (btebda2 empty)
 
-int coin = 30; // intially 30 as maktob fel description 
+int coin = 200; // intially 30 as maktob fel description 
 int prices[3] = { 10,40,60 }; // prices bta3 kol type
 
 bool unlocked[3] = { true,false,false }; // array yeol eh unlocked w eh laa .
@@ -292,6 +292,15 @@ int GebElLane(float mouseX, float mouseY)
 	}
 
 	return lane;
+}
+int KamTetaFelLane(int lane)   // fe kam Teta fel lane da?
+{
+	int count = 0;
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i].type == DEFENSE && players[i].lane == lane)
+			count = count + 1;
+	}
+	return count;
 }
 int GebElCard(float mouseX, float mouseY)
 {
@@ -378,8 +387,9 @@ void DosetElMouse(GLFWwindow* window, int button, int action, int mods)
 					p.type = (PlayerType)card;
 					p.lane = i;
 					p.x = -0.70f;
-					if (card == DEFENSE) {
-						p.health = 7;                                    // Teta
+					if (card == DEFENSE) {  //teta
+						p.health = 7;
+						p.x = -0.70f + KamTetaFelLane(i) * 0.12f;  
 					}
 					else {
 						p.health = 5;                                    // Mama wel Brother
@@ -597,6 +607,24 @@ void MovementElplayers()
 			players[i].x += 0.0015f;
 		}
 	}
+}
+
+bool tetaBtDefense(PlayerDescription player)   
+{
+	if (player.type == DEFENSE)
+		return false;                              // Teta mesh bt7my nafsaha
+
+	for (int i = 0; i < players.size(); i++) {
+		if (players[i].type != DEFENSE)
+			continue;                              // bndawar 3ala Teta bas
+		if (players[i].lane != player.lane)
+			continue;                              // lazem nafs el lane
+		if (players[i].health <= 0)
+			continue;                              // Teta mayta -> mabt7meesh
+		if (players[i].x > player.x)
+			return true;                           // Teta 3ala ymeeno (odamo) -> howa ma7my
+	}
+	return false;                                  // mafeesh Teta odamo -> howa makshoof
 }
 
 bool HalEnemeyOdamy(PlayerDescription player)
@@ -868,6 +896,8 @@ void MoveBullets()
 
 		for (int p = 0; p < players.size(); p++) {
 			if (players[p].lane != bullets[i].lane)
+				continue;
+			if (tetaBtDefense(players[p]))
 				continue;
 			if (bullets[i].x - players[p].x > 0.05f)
 				continue;    // lesa mawseltsh
