@@ -466,9 +466,8 @@ void DrawWord(const char* word, float x, float y, float s, float r, float g, flo
 	}
 }
 
-
+	
 // which of the 7 bars are ON for each digit 0-9
-// order of the columns:   a(top)  b(top-right)  c(bottom-right)  d(bottom)  e(bottom-left)  f(top-left)  g(middle)
 bool digitSegments[10][7] = {
 	//  a      b      c      d      e      f      g
 	{ true,  true,  true,  true,  true,  true,  false },   // 0
